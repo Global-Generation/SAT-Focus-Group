@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum SubmissionStatus {
+  PENDING
+  SHORTLISTED
+  SELECTED
+  REJECTED
+  CONTACTED
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Contact
+  name             String
+  telegramUsername String   @unique
+  age              Int
+  city             String
+  educationLevel   String
+
+  // SAT Prep
+  satTimeline    String
+  hasTakenSat    Boolean
+  previousScore  Int?
+  weeklyHours    String
+  resources      String[]
+  platformUsage  String
+
+  // Experience
+  featuresUsed   String[]
+  whatYouLike     String
+  whatFrustrates  String
+
+  // Readiness
+  motivation       String
+  sessionReadiness String
+  availableDays    String[]
+  availableTimes   String[]
+
+  // Meta
+  referralSource   String?
+  consentData      Boolean
+  consentRecording Boolean
+  ipAddress        String?
+
+  // Scoring
+  totalScore      Int
+  scoreBreakdown  Json
+  scorePercentage Int
+
+  // Admin
+  status     SubmissionStatus @default(PENDING)
+  adminNotes String?
+
+  @@index([status])
+  @@index([totalScore(sort: Desc)])
+  @@map("submissions")
+}
