@@ -19,7 +19,8 @@ export function Step1({ data, onChange }: StepProps) {
           placeholder="Ваше имя"
           value={data.name}
           onChange={(e) => onChange({ name: e.target.value })}
-          className="mt-1"
+          className="mt-1.5 h-11 sm:h-10"
+          autoComplete="name"
         />
       </div>
 
@@ -34,49 +35,51 @@ export function Step1({ data, onChange }: StepProps) {
             if (val && !val.startsWith("@")) val = "@" + val;
             onChange({ telegramUsername: val });
           }}
-          className="mt-1"
+          className="mt-1.5 h-11 sm:h-10"
+          autoComplete="off"
         />
       </div>
 
-      <div>
-        <Label htmlFor="age">Возраст *</Label>
-        <Input
-          id="age"
-          type="number"
-          min={14}
-          max={25}
-          placeholder="16"
-          value={data.age}
-          onChange={(e) =>
-            onChange({ age: e.target.value ? parseInt(e.target.value) : "" })
-          }
-          className="mt-1"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="city">Город *</Label>
-        <Input
-          id="city"
-          placeholder="Москва"
-          value={data.city}
-          onChange={(e) => onChange({ city: e.target.value })}
-          className="mt-1"
-        />
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label htmlFor="age">Возраст *</Label>
+          <Input
+            id="age"
+            type="number"
+            inputMode="numeric"
+            min={14}
+            max={25}
+            placeholder="16"
+            value={data.age}
+            onChange={(e) =>
+              onChange({ age: e.target.value ? parseInt(e.target.value) : "" })
+            }
+            className="mt-1.5 h-11 sm:h-10"
+          />
+        </div>
+        <div>
+          <Label htmlFor="city">Город *</Label>
+          <Input
+            id="city"
+            placeholder="Москва"
+            value={data.city}
+            onChange={(e) => onChange({ city: e.target.value })}
+            className="mt-1.5 h-11 sm:h-10"
+            autoComplete="address-level2"
+          />
+        </div>
       </div>
 
       <div>
         <Label>Класс / курс *</Label>
-        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
           {EDUCATION_LEVELS.map((opt) => (
             <button
               key={opt.value}
               type="button"
               onClick={() => onChange({ educationLevel: opt.value })}
-              className={`rounded-lg border px-3 py-2.5 text-sm transition-colors ${
-                data.educationLevel === opt.value
-                  ? "border-primary bg-blue-50 text-primary font-medium"
-                  : "border-gray-200 hover:border-gray-300"
+              className={`opt-btn justify-center text-sm ${
+                data.educationLevel === opt.value ? "opt-btn-selected" : ""
               }`}
             >
               {opt.label}

@@ -27,12 +27,34 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: "Inter", system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Prevent iOS zoom on input focus — force 16px min */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  @media (min-width: 640px) {
+    input,
+    textarea,
+    select {
+      font-size: 14px !important;
+    }
   }
 }
 
@@ -52,5 +74,36 @@
   .score-low {
     background-color: #f3f4f6;
     color: #4b5563;
+  }
+
+  /* Option button base — 44px min touch target */
+  .opt-btn {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e5e5;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    transition: all 0.15s;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .opt-btn:hover {
+    border-color: #d1d5db;
+  }
+
+  .opt-btn:active {
+    transform: scale(0.98);
+  }
+
+  .opt-btn-selected {
+    border-color: var(--color-primary);
+    background-color: #eff6ff;
+    color: var(--color-primary);
+    font-weight: 500;
   }
 }

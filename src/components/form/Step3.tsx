@@ -27,14 +27,12 @@ export function Step3({ data, onChange }: StepProps) {
     <div className="space-y-6">
       <div>
         <Label>Какие функции вы использовали?</Label>
-        <div className="mt-2 grid grid-cols-2 gap-2">
+        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {FEATURES.map((opt) => (
             <label
               key={opt.value}
-              className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors ${
-                data.featuresUsed.includes(opt.value)
-                  ? "border-primary bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
+              className={`opt-btn gap-2.5 ${
+                data.featuresUsed.includes(opt.value) ? "opt-btn-selected" : ""
               }`}
             >
               <Checkbox
@@ -56,9 +54,9 @@ export function Step3({ data, onChange }: StepProps) {
           placeholder="Расскажите, что вам нравится..."
           value={data.whatYouLike}
           onChange={(e) => onChange({ whatYouLike: e.target.value })}
-          className="mt-1 min-h-[100px]"
+          className="mt-1.5 min-h-[110px]"
         />
-        <p className="mt-1 text-xs text-gray-400">
+        <p className="mt-1.5 text-xs text-gray-400">
           {data.whatYouLike.length} / 200+ символов для макс. баллов
         </p>
       </div>
@@ -72,9 +70,9 @@ export function Step3({ data, onChange }: StepProps) {
           placeholder="Расскажите, что можно улучшить..."
           value={data.whatFrustrates}
           onChange={(e) => onChange({ whatFrustrates: e.target.value })}
-          className="mt-1 min-h-[100px]"
+          className="mt-1.5 min-h-[110px]"
         />
-        <p className="mt-1 text-xs text-gray-400">
+        <p className="mt-1.5 text-xs text-gray-400">
           {data.whatFrustrates.length} / 200+ символов для макс. баллов
         </p>
       </div>
