@@ -18,6 +18,7 @@ import {
   Loader2,
   ShieldCheck,
   Lock,
+  ArrowRight,
 } from "lucide-react";
 
 const STEPS = [
@@ -31,8 +32,13 @@ const STEPS = [
 const DRAFT_KEY = "focus_group_draft";
 const NDA_KEY = "focus_group_nda";
 
+const SAT_APP_URL = "https://cehtptxqfw.us-east-1.awsapprunner.com";
+
+// ── Screen: 0 = hero, 1 = NDA, 2 = form ──
+type Screen = 0 | 1 | 2;
+
 export default function FormPage() {
-  const [ndaAccepted, setNdaAccepted] = useState(false);
+  const [screen, setScreen] = useState<Screen>(0);
   const [ndaChecked, setNdaChecked] = useState(false);
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(INITIAL_FORM_DATA);
@@ -40,10 +46,10 @@ export default function FormPage() {
   const [error, setError] = useState("");
   const topRef = useRef<HTMLDivElement>(null);
 
-  // Restore NDA + draft from localStorage
+  // Restore state from localStorage
   useEffect(() => {
     try {
-      if (localStorage.getItem(NDA_KEY) === "true") setNdaAccepted(true);
+      if (localStorage.getItem(NDA_KEY) === "true") setScreen(2);
       const saved = localStorage.getItem(DRAFT_KEY);
       if (saved) setData(JSON.parse(saved));
     } catch {}
@@ -56,13 +62,13 @@ export default function FormPage() {
     } catch {}
   }, [data]);
 
-  // Scroll to top on step change
+  // Scroll to top on step/screen change
   useEffect(() => {
-    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [step]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step, screen]);
 
   const handleAcceptNda = () => {
-    setNdaAccepted(true);
+    setScreen(2);
     try {
       localStorage.setItem(NDA_KEY, "true");
     } catch {}
@@ -135,76 +141,180 @@ export default function FormPage() {
     }
   };
 
-  // ── NDA Gate Screen ──
-  if (!ndaAccepted) {
+  // ════════════ SCREEN 0: Hero Landing ════════════
+  if (screen === 0) {
     return (
-      <div className="flex min-h-screen min-h-dvh items-center justify-center bg-gradient-to-b from-slate-900 to-slate-800 px-4 py-8">
-        <Card className="max-w-lg border-slate-700 bg-slate-800/80 p-6 shadow-2xl sm:p-8">
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/15">
-            <ShieldCheck className="h-7 w-7 text-amber-400" />
-          </div>
+      <div className="relative min-h-screen min-h-dvh overflow-hidden bg-[#f8fafc]">
+        {/* Background blobs */}
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.12)_0%,transparent_70%)]" />
+          <div className="blob-anim absolute -right-24 -top-24 h-[350px] w-[350px] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.08),transparent_70%)]" />
+          <div className="blob-anim-rev absolute -bottom-12 -left-12 h-[250px] w-[250px] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.06),transparent_70%)]" />
+        </div>
 
-          <h1 className="text-center text-xl font-bold text-white sm:text-2xl">
-            Конфиденциальное исследование
+        <div className="mx-auto max-w-4xl px-4 pb-12 pt-14 text-center sm:px-6 sm:pt-24">
+          {/* Heading */}
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+            Подготовься к SAT{" "}
+            <br className="hidden sm:block" />
+            на{" "}
+            <span className="bg-gradient-to-r from-blue-900 via-blue-500 to-blue-400 bg-clip-text text-transparent">
+              максимальный балл
+            </span>
           </h1>
 
-          <div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4">
-            <div className="flex items-start gap-2">
-              <Lock className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
-              <p className="text-sm font-medium leading-snug text-amber-200">
-                Закрытая фокус-группа по приглашению
-              </p>
+          <p className="mx-auto mt-4 max-w-xl text-base text-slate-500 sm:mt-5 sm:text-lg">
+            540+ вопросов, AI репетитор и симуляция экзамена — всё для 1400+
+          </p>
+
+          {/* Forbes badge */}
+          <div className="mt-5 flex items-center justify-center gap-1.5">
+            <span className="text-xs text-slate-500 sm:text-sm">
+              От экспертов
+            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${SAT_APP_URL}/landing/logo_FE.svg`}
+              alt="Forbes Education"
+              className="h-9 w-auto sm:h-10"
+            />
+          </div>
+
+          {/* Mockup browser */}
+          <div className="mx-auto mt-8 max-w-3xl sm:mt-10">
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white/90 shadow-lg">
+              <div className="flex items-center gap-1.5 border-b border-slate-100 bg-slate-50/60 px-3 py-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
+                <div className="mx-3 h-5 flex-1 rounded-md border border-slate-200/50 bg-slate-50/80" />
+              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`${SAT_APP_URL}/landing/preview-learn.png`}
+                alt="SAT Portal — Обучение"
+                className="block w-full"
+              />
             </div>
           </div>
 
-          <div className="mt-5 space-y-3 text-sm leading-relaxed text-slate-300">
-            <p>
-              Вы получили доступ к анкете закрытой фокус-группы по развитию
-              SAT-платформы. Участие строго по приглашению.
+          {/* University logos */}
+          <div className="mt-8 sm:mt-10">
+            <p className="mb-3 text-xs text-slate-400">
+              Наши ученики поступают в
             </p>
-            <p>
-              Вся информация, которой мы делимся в рамках исследования
-              (концепции, прототипы, планы развития), является{" "}
-              <strong className="text-white">конфиденциальной</strong> и не
-              подлежит распространению.
-            </p>
-            <p>
-              Продолжая, вы соглашаетесь не разглашать детали исследования
-              третьим лицам и участвовать добросовестно.
-            </p>
+            <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8">
+              {["harvard", "yale", "princeton", "duke", "brown"].map((u) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={u}
+                  src={`${SAT_APP_URL}/landing/logos/${u}.${u === "duke" ? "jpg" : "png"}`}
+                  alt={u}
+                  className="h-6 w-auto object-contain opacity-40 grayscale sm:h-8"
+                  style={{ mixBlendMode: "multiply" }}
+                />
+              ))}
+            </div>
           </div>
 
-          <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-600 p-4 transition-colors hover:border-slate-500">
-            <Checkbox
-              checked={ndaChecked}
-              onCheckedChange={(v) => setNdaChecked(v === true)}
-              className="mt-0.5 border-slate-500 data-[state=checked]:border-amber-500 data-[state=checked]:bg-amber-500"
-            />
-            <p className="text-sm leading-snug text-slate-200">
-              Я понимаю и принимаю условия конфиденциальности. Обязуюсь не
-              распространять информацию об исследовании.
+          {/* CTA */}
+          <div className="mt-10 sm:mt-12">
+            <Button
+              onClick={() => setScreen(1)}
+              className="h-12 gap-2 rounded-full bg-primary px-8 text-base font-semibold text-white shadow-lg shadow-blue-500/25 hover:bg-blue-600 hover:shadow-blue-500/30 sm:h-14 sm:px-10 sm:text-lg"
+            >
+              Участвовать в фокус-группе
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+            <p className="mt-3 text-xs text-slate-400">
+              Закрытое исследование по приглашению
             </p>
-          </label>
-
-          <Button
-            onClick={handleAcceptNda}
-            disabled={!ndaChecked}
-            className="mt-5 h-12 w-full gap-2 bg-amber-500 text-sm font-semibold text-slate-900 hover:bg-amber-400 disabled:opacity-40"
-          >
-            <ShieldCheck className="h-4 w-4" />
-            Принимаю и продолжаю
-          </Button>
-
-          <p className="mt-4 text-center text-xs text-slate-500">
-            Ваши данные защищены и используются исключительно для отбора
-            участников.
-          </p>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // ── Main Form ──
+  // ════════════ SCREEN 1: NDA (White theme) ════════════
+  if (screen === 1) {
+    return (
+      <div className="flex min-h-screen min-h-dvh items-center justify-center bg-[#f8fafc] px-4 py-8">
+        <div className="w-full max-w-lg">
+          <Card className="border-slate-200 p-6 shadow-lg sm:p-8">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
+              <ShieldCheck className="h-7 w-7 text-blue-500" />
+            </div>
+
+            <h1 className="text-center text-xl font-bold text-slate-900 sm:text-2xl">
+              Конфиденциальное исследование
+            </h1>
+
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+              <div className="flex items-start gap-2.5">
+                <Lock className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                <p className="text-sm font-medium leading-snug text-amber-800">
+                  Закрытая фокус-группа по приглашению
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 space-y-3 text-sm leading-relaxed text-slate-600">
+              <p>
+                Вы получили доступ к анкете закрытой фокус-группы по развитию
+                SAT-платформы. Участие строго по приглашению.
+              </p>
+              <p>
+                Вся информация, которой мы делимся в рамках исследования
+                (концепции, прототипы, планы развития), является{" "}
+                <strong className="text-slate-900">конфиденциальной</strong>{" "}
+                и не подлежит распространению.
+              </p>
+              <p>
+                Продолжая, вы соглашаетесь не разглашать детали исследования
+                третьим лицам и участвовать добросовестно.
+              </p>
+            </div>
+
+            <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:border-slate-300 hover:bg-slate-50">
+              <Checkbox
+                checked={ndaChecked}
+                onCheckedChange={(v) => setNdaChecked(v === true)}
+                className="mt-0.5"
+              />
+              <p className="text-sm leading-snug text-slate-700">
+                Я понимаю и принимаю условия конфиденциальности. Обязуюсь не
+                распространять информацию об исследовании.
+              </p>
+            </label>
+
+            <Button
+              onClick={handleAcceptNda}
+              disabled={!ndaChecked}
+              className="mt-5 h-12 w-full gap-2 bg-primary text-sm font-semibold text-white hover:bg-blue-600 disabled:opacity-40"
+            >
+              <ShieldCheck className="h-4 w-4" />
+              Принимаю и продолжаю
+            </Button>
+
+            <p className="mt-4 text-center text-xs text-slate-400">
+              Ваши данные защищены и используются исключительно для отбора
+              участников.
+            </p>
+          </Card>
+
+          <button
+            onClick={() => setScreen(0)}
+            className="mt-4 flex w-full items-center justify-center gap-1 text-xs text-slate-400 hover:text-slate-600"
+          >
+            <ChevronLeft className="h-3 w-3" />
+            Назад к описанию
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ════════════ SCREEN 2: Form ════════════
   return (
     <div className="flex min-h-screen min-h-dvh flex-col bg-gradient-to-b from-blue-50 to-white">
       {/* Header + progress — sticky on mobile */}
