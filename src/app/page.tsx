@@ -10,7 +10,15 @@ import { Step4 } from "@/components/form/Step4";
 import { Step5 } from "@/components/form/Step5";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Send, Loader2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Send,
+  Loader2,
+  ShieldCheck,
+  Lock,
+} from "lucide-react";
 
 const STEPS = [
   "О вас",
@@ -21,17 +29,21 @@ const STEPS = [
 ];
 
 const DRAFT_KEY = "focus_group_draft";
+const NDA_KEY = "focus_group_nda";
 
 export default function FormPage() {
+  const [ndaAccepted, setNdaAccepted] = useState(false);
+  const [ndaChecked, setNdaChecked] = useState(false);
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(INITIAL_FORM_DATA);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const topRef = useRef<HTMLDivElement>(null);
 
-  // Restore draft from localStorage
+  // Restore NDA + draft from localStorage
   useEffect(() => {
     try {
+      if (localStorage.getItem(NDA_KEY) === "true") setNdaAccepted(true);
       const saved = localStorage.getItem(DRAFT_KEY);
       if (saved) setData(JSON.parse(saved));
     } catch {}
@@ -49,8 +61,16 @@ export default function FormPage() {
     topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [step]);
 
+  const handleAcceptNda = () => {
+    setNdaAccepted(true);
+    try {
+      localStorage.setItem(NDA_KEY, "true");
+    } catch {}
+  };
+
   const updateData = useCallback(
-    (partial: Partial<FormData>) => setData((prev) => ({ ...prev, ...partial })),
+    (partial: Partial<FormData>) =>
+      setData((prev) => ({ ...prev, ...partial })),
     []
   );
 
@@ -115,6 +135,76 @@ export default function FormPage() {
     }
   };
 
+  // ── NDA Gate Screen ──
+  if (!ndaAccepted) {
+    return (
+      <div className="flex min-h-screen min-h-dvh items-center justify-center bg-gradient-to-b from-slate-900 to-slate-800 px-4 py-8">
+        <Card className="max-w-lg border-slate-700 bg-slate-800/80 p-6 shadow-2xl sm:p-8">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/15">
+            <ShieldCheck className="h-7 w-7 text-amber-400" />
+          </div>
+
+          <h1 className="text-center text-xl font-bold text-white sm:text-2xl">
+            Конфиденциальное исследование
+          </h1>
+
+          <div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4">
+            <div className="flex items-start gap-2">
+              <Lock className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+              <p className="text-sm font-medium leading-snug text-amber-200">
+                Закрытая фокус-группа по приглашению
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 space-y-3 text-sm leading-relaxed text-slate-300">
+            <p>
+              Вы получили доступ к анкете закрытой фокус-группы по развитию
+              SAT-платформы. Участие строго по приглашению.
+            </p>
+            <p>
+              Вся информация, которой мы делимся в рамках исследования
+              (концепции, прототипы, планы развития), является{" "}
+              <strong className="text-white">конфиденциальной</strong> и не
+              подлежит распространению.
+            </p>
+            <p>
+              Продолжая, вы соглашаетесь не разглашать детали исследования
+              третьим лицам и участвовать добросовестно.
+            </p>
+          </div>
+
+          <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-600 p-4 transition-colors hover:border-slate-500">
+            <Checkbox
+              checked={ndaChecked}
+              onCheckedChange={(v) => setNdaChecked(v === true)}
+              className="mt-0.5 border-slate-500 data-[state=checked]:border-amber-500 data-[state=checked]:bg-amber-500"
+            />
+            <p className="text-sm leading-snug text-slate-200">
+              Я понимаю и принимаю условия конфиденциальности. Обязуюсь не
+              распространять информацию об исследовании.
+            </p>
+          </label>
+
+          <Button
+            onClick={handleAcceptNda}
+            disabled={!ndaChecked}
+            className="mt-5 h-12 w-full gap-2 bg-amber-500 text-sm font-semibold text-slate-900 hover:bg-amber-400 disabled:opacity-40"
+          >
+            <ShieldCheck className="h-4 w-4" />
+            Принимаю и продолжаю
+          </Button>
+
+          <p className="mt-4 text-center text-xs text-slate-500">
+            Ваши данные защищены и используются исключительно для отбора
+            участников.
+          </p>
+        </Card>
+      </div>
+    );
+  }
+
+  // ── Main Form ──
   return (
     <div className="flex min-h-screen min-h-dvh flex-col bg-gradient-to-b from-blue-50 to-white">
       {/* Header + progress — sticky on mobile */}
@@ -159,7 +249,8 @@ export default function FormPage() {
       </div>
 
       {/* Sticky bottom navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:static sm:border-0 sm:bg-transparent sm:backdrop-blur-none sm:py-0 sm:pb-8"
+      <div
+        className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:static sm:border-0 sm:bg-transparent sm:backdrop-blur-none sm:py-0 sm:pb-8"
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
