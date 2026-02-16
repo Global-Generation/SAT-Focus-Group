@@ -66,7 +66,7 @@ export default function AdminPage() {
   const [sort, setSort] = useState("score_desc");
 
   const fetchStats = useCallback(async () => {
-    const res = await fetch("/api/admin/stats");
+    const res = await fetch("/focus-group/api/admin/stats");
     if (res.ok) setStats(await res.json());
   }, []);
 
@@ -78,7 +78,7 @@ export default function AdminPage() {
     });
     if (search) params.set("search", search);
 
-    const res = await fetch(`/api/admin/submissions?${params}`);
+    const res = await fetch(`/focus-group/api/admin/submissions?${params}`);
     if (res.ok) {
       const data = await res.json();
       setSubmissions(data.submissions);
@@ -112,7 +112,7 @@ export default function AdminPage() {
             </h1>
             <p className="text-sm text-gray-500">Управление заявками</p>
           </div>
-          <a href="/api/admin/export">
+          <a href="/focus-group/api/admin/export">
             <Button variant="outline" className="gap-2">
               <Download className="h-4 w-4" />
               CSV

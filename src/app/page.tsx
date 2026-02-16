@@ -87,7 +87,7 @@ export default function FormPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/submit", {
+      const res = await fetch("/focus-group/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -102,7 +102,7 @@ export default function FormPage() {
       }
 
       localStorage.removeItem(DRAFT_KEY);
-      window.location.href = "/success";
+      window.location.href = "/focus-group/success";
     } catch {
       setError("Ошибка сети. Попробуйте ещё раз.");
       setSubmitting(false);

@@ -19,7 +19,7 @@ export default function AdminLayout({
 
   useEffect(() => {
     // Check if already authed by trying to fetch stats
-    fetch("/api/admin/stats")
+    fetch("/focus-group/api/admin/stats")
       .then((r) => setAuthed(r.ok))
       .catch(() => setAuthed(false));
   }, []);
@@ -29,7 +29,7 @@ export default function AdminLayout({
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/admin/auth", {
+    const res = await fetch("/focus-group/api/admin/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password }),
