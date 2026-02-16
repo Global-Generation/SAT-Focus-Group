@@ -13,14 +13,14 @@ export default function SuccessPage() {
           Ваша заявка на участие в фокус-группе успешно отправлена.
         </p>
 
-        <div className="mx-auto mt-5 flex items-start gap-2.5 rounded-xl bg-blue-50 p-4 text-left">
-          <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-blue-500" />
-          <div className="text-sm leading-relaxed text-blue-800">
+        <div className="mx-auto mt-5 flex items-start gap-2.5 rounded-xl bg-slate-50 p-4 text-left">
+          <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-slate-400" />
+          <div className="text-sm leading-relaxed text-slate-600">
             <p>
               Если вы будете отобраны — мы свяжемся с вами через{" "}
-              <strong>Telegram</strong>.
+              <strong className="text-slate-700">Telegram</strong>.
             </p>
-            <p className="mt-2 text-blue-600">
+            <p className="mt-2 text-slate-500">
               Мы получаем сотни заявок и, к сожалению, не можем ответить
               каждому. Если вы не получили сообщение — не расстраивайтесь, мы
               ценим ваше участие и интерес к проекту!

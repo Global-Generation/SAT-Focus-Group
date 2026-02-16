@@ -1,6 +1,6 @@
 "use client";
 
-import { FormData, SAT_TIMELINES, WEEKLY_HOURS, RESOURCES, PLATFORM_USAGE } from "@/types";
+import { FormData, SAT_TIMELINES, WEEKLY_HOURS, RESOURCES } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -126,23 +126,6 @@ export function Step2({ data, onChange }: StepProps) {
         </div>
       </div>
 
-      <div>
-        <Label>Пользуетесь нашей SAT-платформой? *</Label>
-        <div className="mt-2 space-y-2">
-          {PLATFORM_USAGE.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => onChange({ platformUsage: opt.value })}
-              className={`opt-btn w-full ${
-                data.platformUsage === opt.value ? "opt-btn-selected" : ""
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

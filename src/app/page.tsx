@@ -24,7 +24,7 @@ import {
 const STEPS = [
   "О вас",
   "SAT и подготовка",
-  "Опыт с продуктом",
+  "Опыт подготовки",
   "Готовность",
   "Подтверждение",
 ];
@@ -94,8 +94,7 @@ export default function FormPage() {
         return !!(
           data.satTimeline &&
           data.hasTakenSat !== "" &&
-          data.weeklyHours &&
-          data.platformUsage
+          data.weeklyHours
         );
       case 2:
         return !!(data.whatYouLike.trim() && data.whatFrustrates.trim());

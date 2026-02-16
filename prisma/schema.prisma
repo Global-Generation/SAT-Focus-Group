@@ -35,10 +35,10 @@ model Submission {
   previousScore  Int?
   weeklyHours    String
   resources      String[]
-  platformUsage  String
+  platformUsage  String?
 
   // Experience
-  featuresUsed   String[]
+  featuresUsed   String[]  @default([])
   whatYouLike     String
   whatFrustrates  String
 

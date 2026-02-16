@@ -1,6 +1,6 @@
 import type { FormData, ScoreBreakdown, ScoringResult } from "@/types";
 
-const MAX_SCORE = 130;
+const MAX_SCORE = 105;
 
 function scoreTimeline(value: string): number {
   const map: Record<string, number> = {
@@ -40,24 +40,6 @@ function scoreWeeklyHours(value: string): number {
 
 function scoreResources(values: string[]): number {
   if (values.length === 0) return 0;
-  if (values.length >= 4) return 10;
-  if (values.length >= 3) return 8;
-  if (values.length >= 2) return 5;
-  return 3;
-}
-
-function scorePlatformUsage(value: string): number {
-  const map: Record<string, number> = {
-    active: 15,
-    sometimes: 10,
-    know_but_no: 5,
-    never_heard: 1,
-  };
-  return map[value] ?? 0;
-}
-
-function scoreFeaturesUsed(values: string[]): number {
-  if (values.includes("none") || values.length === 0) return 0;
   if (values.length >= 4) return 10;
   if (values.length >= 3) return 8;
   if (values.length >= 2) return 5;
@@ -111,8 +93,6 @@ export function calculateScore(data: FormData): ScoringResult {
     ),
     weeklyHours: scoreWeeklyHours(data.weeklyHours),
     resources: scoreResources(data.resources),
-    platformUsage: scorePlatformUsage(data.platformUsage),
-    featuresUsed: scoreFeaturesUsed(data.featuresUsed),
     whatYouLike: scoreTextQuality(data.whatYouLike, 5),
     whatFrustrates: scoreTextQuality(data.whatFrustrates, 5),
     motivation: scoreMotivation(data.motivation),
@@ -128,9 +108,9 @@ export function calculateScore(data: FormData): ScoringResult {
 }
 
 export function getScoreTier(score: number) {
-  if (score >= 100) return { label: "Отличный кандидат", class: "score-excellent" };
-  if (score >= 70) return { label: "Хороший кандидат", class: "score-good" };
-  if (score >= 40) return { label: "Средний кандидат", class: "score-medium" };
+  if (score >= 80) return { label: "Отличный кандидат", class: "score-excellent" };
+  if (score >= 55) return { label: "Хороший кандидат", class: "score-good" };
+  if (score >= 30) return { label: "Средний кандидат", class: "score-medium" };
   return { label: "Низкий приоритет", class: "score-low" };
 }
 
@@ -140,8 +120,6 @@ export const SCORE_LABELS: Record<keyof ScoreBreakdown, { label: string; max: nu
   previousScore: { label: "Предыдущий балл", max: 10 },
   weeklyHours: { label: "Часов в неделю", max: 15 },
   resources: { label: "Ресурсы подготовки", max: 10 },
-  platformUsage: { label: "Использование платформы", max: 15 },
-  featuresUsed: { label: "Функции платформы", max: 10 },
   whatYouLike: { label: "Что нравится", max: 5 },
   whatFrustrates: { label: "Что расстраивает", max: 5 },
   motivation: { label: "Мотивация", max: 15 },

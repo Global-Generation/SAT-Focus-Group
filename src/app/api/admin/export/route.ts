@@ -4,7 +4,6 @@ import { isAdminAuthenticated } from "@/lib/admin-auth";
 import {
   SAT_TIMELINES,
   WEEKLY_HOURS,
-  PLATFORM_USAGE,
   EDUCATION_LEVELS,
   SESSION_READINESS,
 } from "@/types";
@@ -36,8 +35,6 @@ export async function GET() {
     "Балл SAT",
     "Часы/нед",
     "Ресурсы",
-    "Платформа",
-    "Функции",
     "Что нравится",
     "Что расстраивает",
     "Мотивация",
@@ -70,8 +67,6 @@ export async function GET() {
     s.previousScore ? String(s.previousScore) : "",
     getLabel(WEEKLY_HOURS, s.weeklyHours),
     escape(s.resources.join(", ")),
-    getLabel(PLATFORM_USAGE, s.platformUsage),
-    escape(s.featuresUsed.join(", ")),
     escape(s.whatYouLike),
     escape(s.whatFrustrates),
     escape(s.motivation),

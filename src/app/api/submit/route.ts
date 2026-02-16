@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
       !body.satTimeline ||
       body.hasTakenSat === "" ||
       !body.weeklyHours ||
-      !body.platformUsage ||
       !body.whatYouLike?.trim() ||
       !body.whatFrustrates?.trim() ||
       !body.motivation?.trim() ||
@@ -82,8 +81,6 @@ export async function POST(req: NextRequest) {
         previousScore: body.previousScore ? Number(body.previousScore) : null,
         weeklyHours: body.weeklyHours,
         resources: body.resources,
-        platformUsage: body.platformUsage,
-        featuresUsed: body.featuresUsed,
         whatYouLike: body.whatYouLike.trim(),
         whatFrustrates: body.whatFrustrates.trim(),
         motivation: body.motivation.trim(),

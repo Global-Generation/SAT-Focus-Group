@@ -12,10 +12,8 @@ export interface FormData {
   previousScore: number | "";
   weeklyHours: string;
   resources: string[];
-  platformUsage: string;
 
-  // Step 3: Product Experience
-  featuresUsed: string[];
+  // Step 3: SAT Experience
   whatYouLike: string;
   whatFrustrates: string;
 
@@ -42,8 +40,6 @@ export const INITIAL_FORM_DATA: FormData = {
   previousScore: "",
   weeklyHours: "",
   resources: [],
-  platformUsage: "",
-  featuresUsed: [],
   whatYouLike: "",
   whatFrustrates: "",
   motivation: "",
@@ -61,8 +57,6 @@ export interface ScoreBreakdown {
   previousScore: number;
   weeklyHours: number;
   resources: number;
-  platformUsage: number;
-  featuresUsed: number;
   whatYouLike: number;
   whatFrustrates: number;
   motivation: number;
@@ -115,25 +109,7 @@ export const RESOURCES = [
   { value: "tutor", label: "Репетитор" },
   { value: "prep_course", label: "Курсы подготовки" },
   { value: "books", label: "Учебники/книги" },
-  { value: "our_platform", label: "Наша платформа" },
   { value: "other", label: "Другое" },
-];
-
-export const PLATFORM_USAGE = [
-  { value: "active", label: "Да, активно пользуюсь" },
-  { value: "sometimes", label: "Иногда заходу" },
-  { value: "know_but_no", label: "Знаю, но не пользуюсь" },
-  { value: "never_heard", label: "Не слышал(а)" },
-];
-
-export const FEATURES = [
-  { value: "practice_tests", label: "Пробные тесты" },
-  { value: "question_bank", label: "Банк вопросов" },
-  { value: "analytics", label: "Аналитика прогресса" },
-  { value: "ai_tutor", label: "AI репетитор" },
-  { value: "essay_game", label: "Essay Game" },
-  { value: "study_materials", label: "Учебные материалы" },
-  { value: "none", label: "Не пользовался(ась)" },
 ];
 
 export const SESSION_READINESS = [

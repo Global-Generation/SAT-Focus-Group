@@ -11,9 +11,7 @@ import Link from "next/link";
 import {
   SAT_TIMELINES,
   WEEKLY_HOURS,
-  PLATFORM_USAGE,
   EDUCATION_LEVELS,
-  FEATURES,
   SESSION_READINESS,
   DAYS,
   TIMES,
@@ -35,8 +33,8 @@ interface Submission {
   previousScore: number | null;
   weeklyHours: string;
   resources: string[];
-  platformUsage: string;
-  featuresUsed: string[];
+  platformUsage?: string;
+  featuresUsed?: string[];
   whatYouLike: string;
   whatFrustrates: string;
   motivation: string;
@@ -152,7 +150,7 @@ export default function SubmissionDetailPage({
             <span
               className={`rounded-full px-4 py-1.5 text-sm font-medium ${tier.class}`}
             >
-              {sub.totalScore}/130 — {tier.label}
+              {sub.totalScore}/105 — {tier.label}
             </span>
           </div>
         </div>
@@ -216,31 +214,15 @@ export default function SubmissionDetailPage({
                   <dt className="text-gray-500">Ресурсы</dt>
                   <dd className="font-medium">{sub.resources.join(", ")}</dd>
                 </div>
-                <div>
-                  <dt className="text-gray-500">Платформа</dt>
-                  <dd className="font-medium">
-                    {getLabel(PLATFORM_USAGE, sub.platformUsage)}
-                  </dd>
-                </div>
               </dl>
             </Card>
 
             {/* Experience */}
             <Card className="p-5">
               <h3 className="mb-4 font-semibold text-gray-900">
-                Опыт с продуктом
+                Опыт подготовки
               </h3>
               <dl className="space-y-3 text-sm">
-                <div>
-                  <dt className="text-gray-500">Использованные функции</dt>
-                  <dd className="font-medium">
-                    {sub.featuresUsed.length > 0
-                      ? sub.featuresUsed
-                          .map((f) => getLabel(FEATURES, f))
-                          .join(", ")
-                      : "—"}
-                  </dd>
-                </div>
                 <div>
                   <dt className="text-gray-500">Что нравится</dt>
                   <dd className="mt-1 whitespace-pre-wrap text-gray-700">
@@ -326,7 +308,7 @@ export default function SubmissionDetailPage({
                   <div className="flex items-center justify-between font-semibold">
                     <span>Итого</span>
                     <span>
-                      {sub.totalScore}/130 ({sub.scorePercentage}%)
+                      {sub.totalScore}/105 ({sub.scorePercentage}%)
                     </span>
                   </div>
                 </div>
