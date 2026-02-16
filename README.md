@@ -6,6 +6,12 @@ Universal survey & recruitment platform for Global Generation. Currently powers 
 **Admin Panel**: `http://ec2-18-211-149-64.compute-1.amazonaws.com/focus-group/admin`
 **Admin Password**: from `ADMIN_PASSWORD` env var (default: `focusgroup2026`)
 
+### Опросы
+
+| Опрос | Папка | Описание |
+|-------|-------|----------|
+| **SAT** | [`surveys/sat/`](surveys/sat/) | Фокус-группа по подготовке к SAT (5 шагов, 105 баллов, 11 категорий) |
+
 ---
 
 ## Architecture
