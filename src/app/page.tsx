@@ -8,7 +8,6 @@ import { Step2 } from "@/components/form/Step2";
 import { Step3 } from "@/components/form/Step3";
 import { Step4 } from "@/components/form/Step4";
 import { Step5 } from "@/components/form/Step5";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -19,6 +18,9 @@ import {
   ShieldCheck,
   Lock,
   ArrowRight,
+  ClipboardList,
+  Sparkles,
+  Users,
 } from "lucide-react";
 
 const STEPS = [
@@ -34,8 +36,21 @@ const NDA_KEY = "focus_group_nda";
 
 const SAT_APP_URL = "https://cehtptxqfw.us-east-1.awsapprunner.com";
 
-// ── Screen: 0 = hero, 1 = NDA, 2 = form ──
 type Screen = 0 | 1 | 2;
+
+/* ── Animated blob background (reusable) ── */
+function AnimatedBlobs() {
+  return (
+    <div className="animated-bg" aria-hidden="true">
+      <div className="blob blob-hero-center" />
+      <div className="blob blob-1" />
+      <div className="blob blob-2" />
+      <div className="blob blob-3" />
+      <div className="blob blob-4" />
+      <div className="blob blob-5" />
+    </div>
+  );
+}
 
 export default function FormPage() {
   const [screen, setScreen] = useState<Screen>(0);
@@ -45,8 +60,10 @@ export default function FormPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const topRef = useRef<HTMLDivElement>(null);
+  const [stepDirection, setStepDirection] = useState<"forward" | "back">(
+    "forward"
+  );
 
-  // Restore state from localStorage
   useEffect(() => {
     try {
       if (localStorage.getItem(NDA_KEY) === "true") setScreen(2);
@@ -55,14 +72,12 @@ export default function FormPage() {
     } catch {}
   }, []);
 
-  // Save draft on change
   useEffect(() => {
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
     } catch {}
   }, [data]);
 
-  // Scroll to top on step/screen change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [step, screen]);
@@ -140,48 +155,90 @@ export default function FormPage() {
     }
   };
 
+  const goNext = () => {
+    setStepDirection("forward");
+    setStep((s) => s + 1);
+  };
+
+  const goPrev = () => {
+    setStepDirection("back");
+    setStep((s) => s - 1);
+  };
+
   // ════════════ SCREEN 0: Hero Landing ════════════
   if (screen === 0) {
     return (
-      <div className="relative min-h-screen min-h-dvh overflow-hidden bg-[#f8fafc]">
-        {/* Background blobs */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.12)_0%,transparent_70%)]" />
-          <div className="blob-anim absolute -right-24 -top-24 h-[350px] w-[350px] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.08),transparent_70%)]" />
-          <div className="blob-anim-rev absolute -bottom-12 -left-12 h-[250px] w-[250px] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.06),transparent_70%)]" />
-        </div>
+      <div className="relative min-h-screen min-h-dvh overflow-hidden">
+        <AnimatedBlobs />
 
-        <div className="mx-auto max-w-4xl px-4 pb-12 pt-14 text-center sm:px-6 sm:pt-24">
-          {/* Heading */}
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-            Подготовься к SAT{" "}
+        <div className="relative mx-auto max-w-4xl px-4 pb-16 pt-16 text-center sm:px-6 sm:pt-28">
+          {/* Heading with word-reveal */}
+          <h1
+            className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
+            style={{ lineHeight: 1.15, paddingBottom: "0.1em" }}
+          >
+            <span
+              className="animate-word-reveal inline-block"
+              style={{ animationDelay: "0ms" }}
+            >
+              Подготовься
+            </span>{" "}
+            <span
+              className="animate-word-reveal inline-block"
+              style={{ animationDelay: "100ms" }}
+            >
+              к
+            </span>{" "}
+            <span
+              className="animate-word-reveal inline-block"
+              style={{ animationDelay: "200ms" }}
+            >
+              SAT
+            </span>
             <br className="hidden sm:block" />
-            на{" "}
-            <span className="bg-gradient-to-r from-blue-900 via-blue-500 to-blue-400 bg-clip-text text-transparent">
+            <span
+              className="animate-word-reveal inline-block"
+              style={{ animationDelay: "300ms" }}
+            >
+              на
+            </span>{" "}
+            <span
+              className="animate-word-reveal inline-block gradient-text"
+              style={{ animationDelay: "400ms" }}
+            >
               максимальный балл
             </span>
           </h1>
 
-          <p className="mx-auto mt-4 max-w-xl text-base text-slate-500 sm:mt-5 sm:text-lg">
+          <p
+            className="animate-fade-up mx-auto mt-5 max-w-2xl text-base text-slate-500 sm:text-lg"
+            style={{ animationDelay: "500ms" }}
+          >
             540+ вопросов, AI репетитор и симуляция экзамена — всё для 1400+
           </p>
 
           {/* Forbes badge */}
-          <div className="mt-5 flex items-center justify-center gap-1.5">
-            <span className="text-xs text-slate-500 sm:text-sm">
+          <div
+            className="animate-fade-up mt-5 flex items-center justify-center gap-1.5"
+            style={{ animationDelay: "600ms" }}
+          >
+            <span className="mr-1 text-xs text-slate-500 sm:text-sm">
               От экспертов
             </span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`${SAT_APP_URL}/landing/logo_FE.svg`}
               alt="Forbes Education"
-              className="h-9 w-auto sm:h-10"
+              className="h-7 w-auto sm:h-10"
             />
           </div>
 
           {/* Mockup browser */}
-          <div className="mx-auto mt-8 max-w-3xl sm:mt-10">
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white/90 shadow-lg">
+          <div
+            className="animate-fade-up mx-auto mt-10 max-w-3xl sm:mt-12"
+            style={{ animationDelay: "700ms" }}
+          >
+            <div className="overflow-hidden rounded-xl border border-slate-200/70 bg-white/90 shadow-lg backdrop-blur-sm transition-all duration-500 hover:shadow-xl sm:hover:scale-[1.02]">
               <div className="flex items-center gap-1.5 border-b border-slate-100 bg-slate-50/60 px-3 py-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
                 <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
@@ -198,33 +255,108 @@ export default function FormPage() {
           </div>
 
           {/* University logos */}
-          <div className="mt-8 sm:mt-10">
-            <p className="mb-3 text-xs text-slate-400">
+          <div
+            className="animate-fade-up mt-10 sm:mt-12"
+            style={{ animationDelay: "800ms" }}
+          >
+            <p className="mb-4 text-xs text-slate-400">
               Наши ученики поступают в
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8">
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 lg:gap-12">
               {["harvard", "yale", "princeton", "duke", "brown"].map((u) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={u}
                   src={`${SAT_APP_URL}/landing/logos/${u}.${u === "duke" ? "jpg" : "png"}`}
                   alt={u}
-                  className="h-6 w-auto object-contain opacity-40 grayscale sm:h-8"
+                  className="h-7 w-auto object-contain opacity-50 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:h-9"
                   style={{ mixBlendMode: "multiply" }}
                 />
               ))}
             </div>
           </div>
 
+          {/* What Is section — glass cards */}
+          <div
+            className="animate-fade-up mx-auto mt-16 max-w-3xl sm:mt-20"
+            style={{ animationDelay: "900ms" }}
+          >
+            <h2 className="text-2xl font-bold sm:text-3xl">
+              Что такое SAT Portal?
+            </h2>
+            <p className="mt-2 text-slate-500">
+              Единая платформа для подготовки к Digital SAT
+            </p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {[
+                {
+                  icon: <ClipboardList className="h-5 w-5 text-slate-600" />,
+                  title: "540+ вопросов",
+                  desc: "Банк вопросов с фильтрами по секции, сложности и теме",
+                },
+                {
+                  icon: <Sparkles className="h-5 w-5 text-slate-600" />,
+                  title: "AI Репетитор",
+                  desc: "Персональный помощник с 5 режимами обучения",
+                },
+                {
+                  icon: <Users className="h-5 w-5 text-slate-600" />,
+                  title: "46 уроков",
+                  desc: "Теория, стратегии и практика по Math и R&W",
+                },
+                {
+                  icon: <ShieldCheck className="h-5 w-5 text-slate-600" />,
+                  title: "Симуляция SAT",
+                  desc: "Полноценный Digital SAT с адаптивной сложностью",
+                },
+              ].map((card, i) => (
+                <div
+                  key={i}
+                  className="glass-card p-5 text-left transition-transform duration-300 sm:hover:-translate-y-1"
+                >
+                  <div className="icon-box mb-3">{card.icon}</div>
+                  <h3 className="font-semibold">{card.title}</h3>
+                  <p className="mt-1 text-sm text-slate-500">{card.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* About section */}
+          <div
+            className="animate-fade-up mx-auto mt-16 max-w-2xl sm:mt-20"
+            style={{ animationDelay: "1000ms" }}
+          >
+            <h2 className="text-2xl font-bold sm:text-3xl">
+              О Global Generation
+            </h2>
+            <p className="mt-3 text-slate-500">
+              Образовательная компания, помогающая студентам поступать в лучшие
+              вузы мира
+            </p>
+            <div className="glass-card mt-6 p-6 text-left">
+              <p className="leading-relaxed text-slate-500">
+                Global Generation — это команда экспертов в области
+                международного образования. Мы помогаем школьникам и студентам из
+                СНГ подготовиться к SAT, поступить в топовые университеты США и
+                Европы, и построить успешную академическую карьеру.
+              </p>
+              <p className="mt-3 leading-relaxed text-slate-500">
+                SAT Portal — наша бесплатная платформа для подготовки к Digital
+                SAT с AI-репетитором, банком вопросов и симуляцией экзамена.
+              </p>
+            </div>
+          </div>
+
           {/* CTA */}
-          <div className="mt-10 sm:mt-12">
-            <Button
-              onClick={() => setScreen(1)}
-              className="h-12 gap-2 rounded-full bg-primary px-8 text-base font-semibold text-white shadow-lg shadow-blue-500/25 hover:bg-blue-600 hover:shadow-blue-500/30 sm:h-14 sm:px-10 sm:text-lg"
-            >
+          <div
+            className="animate-fade-up mt-12 sm:mt-16"
+            style={{ animationDelay: "1100ms" }}
+          >
+            <button onClick={() => setScreen(1)} className="btn-cta">
               Участвовать в фокус-группе
               <ArrowRight className="h-5 w-5" />
-            </Button>
+            </button>
             <p className="mt-3 text-xs text-slate-400">
               Закрытое исследование по приглашению
             </p>
@@ -234,13 +366,15 @@ export default function FormPage() {
     );
   }
 
-  // ════════════ SCREEN 1: NDA (White theme) ════════════
+  // ════════════ SCREEN 1: NDA ════════════
   if (screen === 1) {
     return (
-      <div className="flex min-h-screen min-h-dvh items-center justify-center bg-[#f8fafc] px-4 py-8">
-        <div className="w-full max-w-lg">
-          <Card className="border-slate-200 p-6 shadow-lg sm:p-8">
-            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
+      <div className="relative flex min-h-screen min-h-dvh items-center justify-center px-4 py-8">
+        <AnimatedBlobs />
+
+        <div className="relative z-10 w-full max-w-lg">
+          <div className="animate-fade-scale glass-form p-6 sm:p-8">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50/80">
               <ShieldCheck className="h-7 w-7 text-blue-500" />
             </div>
 
@@ -248,7 +382,7 @@ export default function FormPage() {
               Конфиденциальное исследование
             </h1>
 
-            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <div className="mt-4 rounded-xl border border-amber-200/80 bg-amber-50/80 p-4 backdrop-blur-sm">
               <div className="flex items-start gap-2.5">
                 <Lock className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                 <p className="text-sm font-medium leading-snug text-amber-800">
@@ -265,8 +399,8 @@ export default function FormPage() {
               <p>
                 Вся информация, которой мы делимся в рамках исследования
                 (концепции, прототипы, планы развития), является{" "}
-                <strong className="text-slate-900">конфиденциальной</strong>{" "}
-                и не подлежит распространению.
+                <strong className="text-slate-900">конфиденциальной</strong> и не
+                подлежит распространению.
               </p>
               <p>
                 Продолжая, вы соглашаетесь не разглашать детали исследования
@@ -274,7 +408,7 @@ export default function FormPage() {
               </p>
             </div>
 
-            <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:border-slate-300 hover:bg-slate-50">
+            <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200/80 bg-white/60 p-4 backdrop-blur-sm transition-all hover:border-slate-300 hover:bg-white/80">
               <Checkbox
                 checked={ndaChecked}
                 onCheckedChange={(v) => setNdaChecked(v === true)}
@@ -286,24 +420,24 @@ export default function FormPage() {
               </p>
             </label>
 
-            <Button
+            <button
               onClick={handleAcceptNda}
               disabled={!ndaChecked}
-              className="mt-5 h-12 w-full gap-2 bg-primary text-sm font-semibold text-white hover:bg-blue-600 disabled:opacity-40"
+              className="btn-cta mt-5 w-full disabled:opacity-40 disabled:hover:transform-none disabled:hover:shadow-none"
             >
               <ShieldCheck className="h-4 w-4" />
               Принимаю и продолжаю
-            </Button>
+            </button>
 
             <p className="mt-4 text-center text-xs text-slate-400">
               Ваши данные защищены и используются исключительно для отбора
               участников.
             </p>
-          </Card>
+          </div>
 
           <button
             onClick={() => setScreen(0)}
-            className="mt-4 flex w-full items-center justify-center gap-1 text-xs text-slate-400 hover:text-slate-600"
+            className="mt-4 flex w-full items-center justify-center gap-1 text-xs text-slate-400 transition-colors hover:text-slate-600"
           >
             <ChevronLeft className="h-3 w-3" />
             Назад к описанию
@@ -315,18 +449,20 @@ export default function FormPage() {
 
   // ════════════ SCREEN 2: Form ════════════
   return (
-    <div className="flex min-h-screen min-h-dvh flex-col bg-gradient-to-b from-blue-50 to-white">
+    <div className="relative flex min-h-screen min-h-dvh flex-col">
+      <AnimatedBlobs />
+
       {/* Header + progress — sticky on mobile */}
       <div
         ref={topRef}
-        className="sticky top-0 z-10 bg-gradient-to-b from-blue-50 via-blue-50 to-blue-50/95 px-4 pb-4 pt-4 backdrop-blur-sm sm:static sm:bg-transparent sm:px-4 sm:pt-8 sm:pb-0"
+        className="sticky top-0 z-10 border-b border-slate-200/50 bg-white/70 px-4 pb-4 pt-4 backdrop-blur-xl sm:static sm:border-0 sm:bg-transparent sm:px-4 sm:pb-0 sm:pt-8 sm:backdrop-blur-none"
       >
         <div className="mx-auto max-w-2xl">
           <div className="mb-5 text-center sm:mb-6">
-            <h1 className="text-xl font-bold text-gray-900 sm:text-3xl">
+            <h1 className="text-xl font-bold text-slate-900 sm:text-3xl">
               SAT Фокус-группа
             </h1>
-            <p className="mt-1 text-sm text-gray-500 sm:mt-2 sm:text-base">
+            <p className="mt-1 text-sm text-slate-500 sm:mt-2 sm:text-base">
               Помогите нам улучшить платформу подготовки к SAT
             </p>
           </div>
@@ -335,10 +471,13 @@ export default function FormPage() {
       </div>
 
       {/* Form content */}
-      <div className="flex-1 px-4 pt-4 pb-28 sm:pb-8 sm:pt-6">
+      <div className="relative flex-1 px-4 pb-28 pt-4 sm:pb-8 sm:pt-6">
         <div className="mx-auto max-w-2xl">
-          <Card className="p-5 sm:p-8">
-            <h2 className="mb-5 text-lg font-semibold text-gray-900 sm:mb-6">
+          <div
+            key={step}
+            className={`glass-form p-5 sm:p-8 ${stepDirection === "forward" ? "animate-slide-right" : "animate-slide-left"}`}
+          >
+            <h2 className="mb-5 text-lg font-semibold text-slate-900 sm:mb-6">
               {STEPS[step]}
             </h2>
 
@@ -349,48 +488,48 @@ export default function FormPage() {
             {step === 4 && <Step5 data={data} onChange={updateData} />}
 
             {error && (
-              <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+              <div className="mt-4 rounded-xl border border-red-200/80 bg-red-50/80 p-3 text-sm text-red-700 backdrop-blur-sm">
                 {error}
               </div>
             )}
-          </Card>
+          </div>
         </div>
       </div>
 
       {/* Sticky bottom navigation */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-200 bg-white/95 px-4 py-3 backdrop-blur-md sm:static sm:border-0 sm:bg-transparent sm:backdrop-blur-none sm:py-0 sm:pb-8"
+        className="fixed bottom-0 left-0 right-0 z-20 border-t border-slate-200/50 bg-white/80 px-4 py-3 backdrop-blur-xl sm:static sm:border-0 sm:bg-transparent sm:py-0 sm:pb-8 sm:backdrop-blur-none"
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
           <Button
             variant="outline"
-            onClick={() => setStep((s) => s - 1)}
+            onClick={goPrev}
             disabled={step === 0}
-            className="h-11 gap-1 px-4 text-sm sm:h-10"
+            className="h-11 gap-1 rounded-xl border-slate-200/80 bg-white/70 px-4 text-sm backdrop-blur-sm sm:h-10"
           >
             <ChevronLeft className="h-4 w-4" />
             Назад
           </Button>
 
-          <span className="text-xs text-gray-400 sm:hidden">
+          <span className="text-xs text-slate-400 sm:hidden">
             {step + 1} / {STEPS.length}
           </span>
 
           {step < STEPS.length - 1 ? (
-            <Button
-              onClick={() => setStep((s) => s + 1)}
+            <button
+              onClick={goNext}
               disabled={!canGoNext()}
-              className="h-11 gap-1 bg-primary px-5 text-sm text-white hover:bg-blue-600 sm:h-10"
+              className="btn-cta h-11 px-6 text-sm disabled:opacity-40 disabled:hover:transform-none disabled:hover:shadow-none sm:h-10"
             >
               Далее
               <ChevronRight className="h-4 w-4" />
-            </Button>
+            </button>
           ) : (
-            <Button
+            <button
               onClick={handleSubmit}
               disabled={!canGoNext() || submitting}
-              className="h-11 gap-2 bg-primary px-5 text-sm text-white hover:bg-blue-600 sm:h-10"
+              className="btn-cta h-11 px-6 text-sm disabled:opacity-40 disabled:hover:transform-none disabled:hover:shadow-none sm:h-10"
             >
               {submitting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -398,7 +537,7 @@ export default function FormPage() {
                 <Send className="h-4 w-4" />
               )}
               Отправить
-            </Button>
+            </button>
           )}
         </div>
       </div>

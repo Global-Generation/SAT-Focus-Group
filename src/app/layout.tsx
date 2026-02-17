@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SAT Фокус-группа — Анкета участника",
+  title: "GG Surveys — Опросы Global Generation",
   description:
-    "Примите участие в фокус-группе SAT-платформы и помогите улучшить продукт",
+    "Примите участие в опросе и помогите улучшить образовательные продукты",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
           content="black-translucent"
         />
       </head>
-      <body className="min-h-screen min-h-dvh bg-gray-50 antialiased">
+      <body className="min-h-screen min-h-dvh antialiased">
         {children}
       </body>
     </html>

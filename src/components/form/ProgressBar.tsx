@@ -16,12 +16,13 @@ export function ProgressBar({ steps, current }: ProgressBarProps) {
           <div className="flex flex-col items-center gap-1.5">
             <div
               className={cn(
-                "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-all sm:h-10 sm:w-10",
+                "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-all duration-300 sm:h-10 sm:w-10",
                 i < current &&
-                  "bg-primary text-white",
+                  "bg-primary text-white shadow-[0_0_12px_rgba(59,130,246,0.3)]",
                 i === current &&
-                  "bg-primary text-white ring-[3px] ring-blue-200",
-                i > current && "bg-gray-100 text-gray-400 border border-gray-200"
+                  "bg-primary text-white ring-[3px] ring-blue-200/60 shadow-[0_0_16px_rgba(59,130,246,0.35)]",
+                i > current &&
+                  "border border-slate-200/80 bg-white/60 text-slate-400 backdrop-blur-sm"
               )}
             >
               {i < current ? (
@@ -32,10 +33,12 @@ export function ProgressBar({ steps, current }: ProgressBarProps) {
             </div>
             <span
               className={cn(
-                "text-[11px] leading-tight text-center max-w-[70px] sm:max-w-none sm:text-xs",
+                "max-w-[70px] text-center text-[11px] leading-tight transition-colors duration-300 sm:max-w-none sm:text-xs",
                 i === current
-                  ? "text-primary font-medium"
-                  : "text-gray-400"
+                  ? "font-medium text-primary"
+                  : i < current
+                    ? "text-slate-500"
+                    : "text-slate-400"
               )}
             >
               {label}
@@ -44,8 +47,10 @@ export function ProgressBar({ steps, current }: ProgressBarProps) {
           {i < steps.length - 1 && (
             <div
               className={cn(
-                "mx-1 h-0.5 flex-1 rounded-full transition-colors sm:mx-2",
-                i < current ? "bg-primary" : "bg-gray-200"
+                "mx-1 h-0.5 flex-1 rounded-full transition-all duration-500 sm:mx-2",
+                i < current
+                  ? "bg-primary shadow-[0_0_6px_rgba(59,130,246,0.2)]"
+                  : "bg-slate-200/80"
               )}
             />
           )}

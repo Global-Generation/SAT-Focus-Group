@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { Card } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
 
 export default async function SuccessPage({
@@ -19,14 +18,26 @@ export default async function SuccessPage({
     "Спасибо за участие! Ваши ответы успешно отправлены.";
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-gray-50 p-4">
-      <Card className="max-w-md p-8 text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-          <CheckCircle className="h-8 w-8 text-green-600" />
+    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden p-4">
+      {/* Animated blob background */}
+      <div className="animated-bg" aria-hidden="true">
+        <div className="blob blob-hero-center" />
+        <div className="blob blob-1" />
+        <div className="blob blob-3" />
+        <div className="blob blob-5" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-md">
+        <div className="glass-form animate-fade-scale p-8 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-50/80 backdrop-blur-sm">
+            <CheckCircle className="h-8 w-8 text-green-500" />
+          </div>
+          <h1 className="mb-3 text-xl font-bold text-slate-900">
+            {survey?.title || "Готово!"}
+          </h1>
+          <p className="whitespace-pre-wrap text-slate-600">{message}</p>
         </div>
-        <h1 className="text-xl font-bold mb-3">{survey?.title || "Готово!"}</h1>
-        <p className="text-gray-600 whitespace-pre-wrap">{message}</p>
-      </Card>
+      </div>
     </div>
   );
 }
