@@ -112,80 +112,88 @@ export default function UsersPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Пользователи</h1>
-        <Button
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Пользователи</h1>
+          <p className="mt-1 text-sm text-slate-500">{users.length} пользователь(ей)</p>
+        </div>
+        <button
           onClick={() => {
             setShowForm(true);
             setEditId(null);
             setForm({ email: "", password: "", name: "", role: "EDITOR" });
           }}
-          className="bg-primary text-white"
+          className="btn-cta h-10 px-5 text-sm"
         >
-          <Plus className="mr-1 h-4 w-4" /> Добавить
-        </Button>
+          <Plus className="h-4 w-4" /> Добавить
+        </button>
       </div>
 
       {showForm && (
-        <Card className="mb-6 p-4">
-          <h3 className="mb-3 text-sm font-medium">
+        <div className="glass-form mb-6 p-5">
+          <h3 className="mb-3 text-sm font-semibold text-slate-900">
             {editId ? "Редактировать" : "Новый пользователь"}
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs">Имя</Label>
+              <Label className="text-xs text-slate-600">Имя</Label>
               <Input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="mt-1"
+                className="mt-1 rounded-xl border-slate-200/80 bg-white/70"
               />
             </div>
             <div>
-              <Label className="text-xs">Email</Label>
+              <Label className="text-xs text-slate-600">Email</Label>
               <Input
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="mt-1"
+                className="mt-1 rounded-xl border-slate-200/80 bg-white/70"
               />
             </div>
             <div>
-              <Label className="text-xs">
+              <Label className="text-xs text-slate-600">
                 Пароль{editId ? " (оставьте пустым)" : ""}
               </Label>
               <Input
                 type="password"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="mt-1"
+                className="mt-1 rounded-xl border-slate-200/80 bg-white/70"
               />
             </div>
             <div>
-              <Label className="text-xs">Роль</Label>
+              <Label className="text-xs text-slate-600">Роль</Label>
               <select
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-xl border border-slate-200/80 bg-white/70 px-3 py-2 text-sm"
               >
                 <option value="EDITOR">Редактор</option>
                 <option value="OWNER">Владелец</option>
               </select>
             </div>
           </div>
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-          <div className="mt-3 flex gap-2 justify-end">
+          {error && (
+            <div className="mt-2 rounded-xl border border-red-200/80 bg-red-50/80 p-3 text-sm text-red-600">
+              {error}
+            </div>
+          )}
+          <div className="mt-4 flex gap-2 justify-end">
             <Button
               variant="outline"
               onClick={() => {
                 setShowForm(false);
                 setEditId(null);
               }}
+              className="rounded-xl border-slate-200/80"
             >
               Отмена
             </Button>
-            <Button
+            <button
               onClick={handleSubmit}
               disabled={saving}
-              className="bg-primary text-white"
+              className="btn-cta h-10 px-5 text-sm disabled:opacity-40"
             >
               {saving ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -194,43 +202,55 @@ export default function UsersPage() {
               ) : (
                 "Создать"
               )}
-            </Button>
+            </button>
           </div>
-        </Card>
+        </div>
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {users.map((u) => (
-          <Card key={u.id} className="flex items-center justify-between p-4">
+          <div key={u.id} className="glass-card flex items-center justify-between p-4">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{u.name}</span>
-                <Badge
-                  className={
-                    u.role === "OWNER"
-                      ? "bg-purple-100 text-purple-700"
-                      : "bg-gray-100 text-gray-700"
-                  }
-                >
-                  {u.role}
-                </Badge>
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100/80 text-sm font-semibold text-slate-600">
+                  {u.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-slate-900">{u.name}</span>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                        u.role === "OWNER"
+                          ? "bg-violet-50/80 text-violet-700 border border-violet-200/60"
+                          : "bg-slate-100/80 text-slate-600 border border-slate-200/60"
+                      }`}
+                    >
+                      {u.role}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400">{u.email}</p>
+                </div>
               </div>
-              <p className="text-xs text-gray-500">{u.email}</p>
             </div>
-            <div className="flex gap-1">
-              <Button variant="outline" size="sm" onClick={() => startEdit(u)}>
+            <div className="flex gap-1.5">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => startEdit(u)}
+                className="rounded-lg border-slate-200/80 bg-white/70 backdrop-blur-sm hover:bg-white"
+              >
                 <Pencil className="h-3.5 w-3.5" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handleDelete(u.id)}
-                className="text-red-500 hover:text-red-700"
+                className="rounded-lg border-slate-200/80 bg-white/70 text-red-400 backdrop-blur-sm hover:bg-red-50 hover:text-red-600"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
+// Card removed — using glass-card divs
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, ArrowLeft, Users, BarChart3, UserCheck, Clock } from "lucide-react";
@@ -59,17 +59,34 @@ export default function StatsPage({
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState("");
+
   useEffect(() => {
     fetch(`/focus-group/api/admin/surveys/${id}/stats`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(r.status === 401 ? "Не авторизован" : "Ошибка загрузки");
+        return r.json();
+      })
       .then(setStats)
+      .catch((e) => setError(e.message || "Ошибка"))
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading || !stats) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      </div>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-3">
+        <p className="text-red-500 text-sm">{error || "Не удалось загрузить статистику"}</p>
+        <Button variant="outline" size="sm" onClick={() => router.push("/admin")}>
+          <ArrowLeft className="h-4 w-4 mr-1" /> Назад
+        </Button>
       </div>
     );
   }
@@ -80,7 +97,7 @@ export default function StatsPage({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => router.push("/focus-group/admin")}
+          onClick={() => router.push("/admin")}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
@@ -92,57 +109,57 @@ export default function StatsPage({
 
       {/* Summary cards */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Card className="p-4">
+        <div className="glass-card p-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-blue-100 p-2">
-              <Users className="h-5 w-5 text-primary" />
+            <div className="rounded-xl bg-blue-50/80 p-2.5">
+              <Users className="h-5 w-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Всего</p>
-              <p className="text-2xl font-bold">{stats.total}</p>
+              <p className="text-xs text-slate-500">Всего</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.total}</p>
             </div>
           </div>
-        </Card>
-        <Card className="p-4">
+        </div>
+        <div className="glass-card p-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-yellow-100 p-2">
-              <BarChart3 className="h-5 w-5 text-yellow-600" />
+            <div className="rounded-xl bg-amber-50/80 p-2.5">
+              <BarChart3 className="h-5 w-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Средний балл</p>
-              <p className="text-2xl font-bold">
+              <p className="text-xs text-slate-500">Средний балл</p>
+              <p className="text-2xl font-bold text-slate-900">
                 {stats.avgScore}/{stats.survey.maxScore}
               </p>
             </div>
           </div>
-        </Card>
-        <Card className="p-4">
+        </div>
+        <div className="glass-card p-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-green-100 p-2">
-              <UserCheck className="h-5 w-5 text-green-600" />
+            <div className="rounded-xl bg-emerald-50/80 p-2.5">
+              <UserCheck className="h-5 w-5 text-emerald-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Отобрано</p>
-              <p className="text-2xl font-bold">{stats.selected}</p>
+              <p className="text-xs text-slate-500">Отобрано</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.selected}</p>
             </div>
           </div>
-        </Card>
-        <Card className="p-4">
+        </div>
+        <div className="glass-card p-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-gray-100 p-2">
-              <Clock className="h-5 w-5 text-gray-600" />
+            <div className="rounded-xl bg-slate-100/80 p-2.5">
+              <Clock className="h-5 w-5 text-slate-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Ожидают</p>
-              <p className="text-2xl font-bold">{stats.pending}</p>
+              <p className="text-xs text-slate-500">Ожидают</p>
+              <p className="text-2xl font-bold text-slate-900">{stats.pending}</p>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Status breakdown */}
-        <Card className="p-4">
+        <div className="glass-card p-4">
           <h3 className="mb-3 font-medium text-sm">По статусам</h3>
           <div className="flex flex-wrap gap-2">
             {Object.entries(stats.byStatus).map(([status, count]) => (
@@ -151,10 +168,10 @@ export default function StatsPage({
               </Badge>
             ))}
           </div>
-        </Card>
+        </div>
 
         {/* Score tiers */}
-        <Card className="p-4">
+        <div className="glass-card p-4">
           <h3 className="mb-3 font-medium text-sm">Распределение баллов</h3>
           <div className="space-y-2">
             {Object.entries(stats.tierCounts).map(([tier, count]) => {
@@ -175,7 +192,7 @@ export default function StatsPage({
               );
             })}
           </div>
-        </Card>
+        </div>
 
         {/* Per-question analytics */}
         {stats.questionStats
@@ -184,7 +201,7 @@ export default function StatsPage({
               q.distribution || q.frequency || q.avg !== undefined || q.avgLength
           )
           .map((q) => (
-            <Card key={q.id} className="p-4">
+            <div key={q.id} className="glass-card p-4">
               <h3 className="mb-1 font-medium text-sm">{q.label}</h3>
               <p className="mb-3 text-xs text-gray-400">
                 {q.totalAnswers} ответов
@@ -271,12 +288,12 @@ export default function StatsPage({
                   </div>
                 </div>
               )}
-            </Card>
+            </div>
           ))}
 
         {/* Timeline */}
         {Object.keys(stats.timeline).length > 0 && (
-          <Card className="p-4 lg:col-span-2">
+          <div className="glass-card p-4 lg:col-span-2">
             <h3 className="mb-3 font-medium text-sm">Ответы по дням (30 дней)</h3>
             <div className="flex items-end gap-1 h-24">
               {(() => {
@@ -292,7 +309,7 @@ export default function StatsPage({
                 ));
               })()}
             </div>
-          </Card>
+          </div>
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
+// Card removed — using glass-card divs
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -94,8 +94,8 @@ export default function ResponsesPage({
   useEffect(() => {
     // Get survey title
     fetch(`/focus-group/api/admin/surveys/${id}`)
-      .then((r) => r.json())
-      .then((d) => setSurveyTitle(d.survey?.title || ""));
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setSurveyTitle(d.survey?.title || ""));
   }, [id]);
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function ResponsesPage({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => router.push("/focus-group/admin")}
+          onClick={() => router.push("/admin")}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
@@ -137,10 +137,10 @@ export default function ResponsesPage({
       </div>
 
       {/* Filters */}
-      <Card className="mb-4 p-3">
+      <div className="glass-card mb-4 p-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               placeholder="Поиск..."
               value={search}
@@ -148,7 +148,7 @@ export default function ResponsesPage({
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="pl-9"
+              className="rounded-xl border-slate-200/80 bg-white/70 pl-9 backdrop-blur-sm"
             />
           </div>
           <select
@@ -157,7 +157,7 @@ export default function ResponsesPage({
               setStatusFilter(e.target.value);
               setPage(1);
             }}
-            className="rounded-md border px-3 py-2 text-sm"
+            className="rounded-xl border border-slate-200/80 bg-white/70 px-3 py-2 text-sm backdrop-blur-sm"
           >
             <option value="">Все статусы</option>
             <option value="PENDING">Ожидает</option>
@@ -179,7 +179,7 @@ export default function ResponsesPage({
               );
               setPage(1);
             }}
-            className="flex items-center gap-1 rounded-md border px-3 py-2 text-sm hover:bg-gray-50"
+            className="flex items-center gap-1 rounded-xl border border-slate-200/80 bg-white/70 px-3 py-2 text-sm backdrop-blur-sm transition-colors hover:bg-white"
           >
             <ArrowUpDown className="h-4 w-4" />
             {sort === "score_desc" && "Балл ↓"}
@@ -188,18 +188,18 @@ export default function ResponsesPage({
             {sort === "date_asc" && "Дата ↑"}
           </button>
         </div>
-      </Card>
+      </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
         </div>
       ) : (
-        <Card className="overflow-hidden">
+        <div className="glass-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b bg-gray-50 text-left text-gray-500">
+                <tr className="border-b border-slate-200/60 bg-slate-50/50 text-left text-slate-500">
                   <th className="px-4 py-3 font-medium">Имя</th>
                   <th className="px-4 py-3 font-medium">ID</th>
                   <th className="px-4 py-3 font-medium">Балл</th>
@@ -213,10 +213,10 @@ export default function ResponsesPage({
                   return (
                     <tr
                       key={r.id}
-                      className="border-b hover:bg-gray-50 cursor-pointer"
+                      className="border-b border-slate-100 transition-colors hover:bg-blue-50/30 cursor-pointer"
                       onClick={() =>
                         router.push(
-                          `/focus-group/admin/surveys/${id}/responses/${r.id}`
+                          `/admin/surveys/${id}/responses/${r.id}`
                         )
                       }
                     >
@@ -283,7 +283,7 @@ export default function ResponsesPage({
               </div>
             </div>
           )}
-        </Card>
+        </div>
       )}
     </div>
   );

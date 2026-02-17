@@ -10,6 +10,10 @@ import {
   Send,
   ArrowRight,
   ShieldCheck,
+  Clock,
+  FileText,
+  Layers,
+  Sparkles,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import QuestionRenderer, {
@@ -147,49 +151,118 @@ export default function DynamicForm({ survey }: Props) {
     }
   };
 
+  const totalQuestions = survey.pages.reduce((sum, p) => sum + p.questions.length, 0);
+  const estimatedMinutes = Math.max(3, Math.ceil(totalQuestions * 0.4));
+
   // ── Hero screen ──
   if (screen === "hero") {
+    const heroText = survey.heroTitle || survey.title;
+    const words = heroText.split(" ");
+    const midpoint = Math.ceil(words.length / 2);
+
     return (
-      <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden p-6 text-center">
+      <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-5 py-12 text-center">
         <AnimatedBlobs />
 
-        <div className="relative z-10 max-w-lg">
-          <h1
-            className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
-            style={{ lineHeight: 1.15, paddingBottom: "0.1em" }}
+        {/* Decorative rings & dots */}
+        <div className="hero-ring hero-ring-1" />
+        <div className="hero-ring hero-ring-2" />
+        <div className="hero-ring hero-ring-3 hidden sm:block" />
+        <div className="hero-dot hero-dot-1" />
+        <div className="hero-dot hero-dot-2 hidden sm:block" />
+        <div className="hero-dot hero-dot-3" />
+
+        <div className="relative z-10 max-w-2xl">
+          {/* Badge */}
+          <div
+            className="hero-badge mx-auto mb-6"
           >
-            {(survey.heroTitle || survey.title)
-              .split(" ")
-              .map((word, i) => (
-                <Fragment key={i}>
-                  <span
-                    className="animate-word-reveal inline-block"
-                    style={{ animationDelay: `${i * 100}ms` }}
-                  >
-                    {word}
-                  </span>{" "}
-                </Fragment>
-              ))}
+            <Sparkles className="h-3.5 w-3.5" />
+            Эксклюзивный опрос
+          </div>
+
+          {/* Gradient line */}
+          <div
+            className="hero-line animate-fade-up mb-8"
+            style={{ animationDelay: "100ms" }}
+          />
+
+          {/* Title with gradient accent */}
+          <h1
+            className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl lg:text-[3.25rem]"
+            style={{ lineHeight: 1.18, paddingBottom: "0.1em" }}
+          >
+            {words.map((word, i) => (
+              <Fragment key={i}>
+                <span
+                  className={`animate-word-reveal inline-block ${i >= midpoint ? "gradient-text" : ""}`}
+                  style={{ animationDelay: `${150 + i * 90}ms` }}
+                >
+                  {word}
+                </span>{" "}
+              </Fragment>
+            ))}
           </h1>
+
+          {/* Description */}
           {survey.description && (
             <p
-              className="animate-fade-up mx-auto mt-4 max-w-md text-base text-slate-500 sm:text-lg"
-              style={{ animationDelay: "400ms" }}
+              className="animate-fade-up mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-slate-500 sm:text-lg sm:leading-relaxed"
+              style={{ animationDelay: "500ms" }}
             >
               {survey.description}
             </p>
           )}
+
+          {/* Stat cards */}
           <div
-            className="animate-fade-up mt-8"
-            style={{ animationDelay: "600ms" }}
+            className="animate-fade-up hero-stats mt-8"
+            style={{ animationDelay: "650ms" }}
+          >
+            <div className="hero-stat">
+              <div className="hero-stat-icon bg-blue-50">
+                <Clock className="h-4 w-4 text-blue-500" />
+              </div>
+              <div className="text-left">
+                <div className="hero-stat-label">Время</div>
+                <div className="hero-stat-value">~{estimatedMinutes} мин</div>
+              </div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-icon bg-violet-50">
+                <FileText className="h-4 w-4 text-violet-500" />
+              </div>
+              <div className="text-left">
+                <div className="hero-stat-label">Вопросов</div>
+                <div className="hero-stat-value">{totalQuestions}</div>
+              </div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-icon bg-emerald-50">
+                <Layers className="h-4 w-4 text-emerald-500" />
+              </div>
+              <div className="text-left">
+                <div className="hero-stat-label">Разделов</div>
+                <div className="hero-stat-value">{survey.pages.length}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div
+            className="animate-fade-up mt-10"
+            style={{ animationDelay: "800ms" }}
           >
             <button
               onClick={() => setScreen(survey.ndaText ? "nda" : "form")}
-              className="btn-cta"
+              className="btn-cta-hero"
             >
-              Начать
+              Начать опрос
               <ArrowRight className="h-5 w-5" />
             </button>
+            <p className="mt-4 text-xs text-slate-400">
+              {survey.ndaText ? "Конфиденциальное исследование по приглашению" : "Ваши ответы анонимны и защищены"}
+            </p>
           </div>
         </div>
       </div>

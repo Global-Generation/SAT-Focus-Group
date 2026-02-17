@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
+// Card removed — using glass-card divs
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -107,7 +107,7 @@ export default function ResponseDetailPage({
           variant="outline"
           size="sm"
           onClick={() =>
-            router.push(`/focus-group/admin/surveys/${id}/responses`)
+            router.push(`/admin/surveys/${id}/responses`)
           }
         >
           <ArrowLeft className="h-4 w-4" />
@@ -123,7 +123,7 @@ export default function ResponseDetailPage({
         <div className="lg:col-span-2 space-y-4">
           {/* Info answers */}
           {unscoredAnswers.length > 0 && (
-            <Card className="p-4">
+            <div className="glass-card p-4">
               <h3 className="mb-3 font-medium text-sm">Информация</h3>
               <div className="space-y-2">
                 {unscoredAnswers.map((a) => (
@@ -133,12 +133,12 @@ export default function ResponseDetailPage({
                   </div>
                 ))}
               </div>
-            </Card>
+            </div>
           )}
 
           {/* Scored answers */}
           {scoredAnswers.length > 0 && (
-            <Card className="p-4">
+            <div className="glass-card p-4">
               <h3 className="mb-3 font-medium text-sm">Ответы с баллами</h3>
               <div className="space-y-3">
                 {scoredAnswers.map((a) => (
@@ -153,13 +153,13 @@ export default function ResponseDetailPage({
                   </div>
                 ))}
               </div>
-            </Card>
+            </div>
           )}
         </div>
 
         {/* Sidebar */}
         <div className="space-y-4">
-          <Card className="p-4">
+          <div className="glass-card p-4">
             <h3 className="mb-3 font-medium text-sm">Результат</h3>
             <div className="text-center mb-3">
               <div className="text-3xl font-bold">{response.totalScore}</div>
@@ -173,9 +173,9 @@ export default function ResponseDetailPage({
                 style={{ width: `${response.scorePercentage}%` }}
               />
             </div>
-          </Card>
+          </div>
 
-          <Card className="p-4">
+          <div className="glass-card p-4">
             <h3 className="mb-3 font-medium text-sm">Статус</h3>
             <div className="flex flex-wrap gap-1.5">
               {STATUSES.map((s) => (
@@ -192,9 +192,9 @@ export default function ResponseDetailPage({
                 </button>
               ))}
             </div>
-          </Card>
+          </div>
 
-          <Card className="p-4">
+          <div className="glass-card p-4">
             <h3 className="mb-3 font-medium text-sm">Заметки</h3>
             <Textarea
               value={notes}
@@ -202,20 +202,20 @@ export default function ResponseDetailPage({
               rows={4}
               placeholder="Заметки администратора..."
             />
-          </Card>
+          </div>
 
-          <Button
+          <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full bg-primary text-white"
+            className="btn-cta w-full text-sm disabled:opacity-40"
           >
             {saving ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-1" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Save className="h-4 w-4 mr-1" />
+              <Save className="h-4 w-4" />
             )}
             Сохранить
-          </Button>
+          </button>
 
           <div className="text-xs text-gray-400 space-y-1">
             <p>Дата: {new Date(response.createdAt).toLocaleString("ru")}</p>

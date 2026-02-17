@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, use } from "react";
-import { Card } from "@/components/ui/card";
+// Card removed — using glass-card divs
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -159,7 +159,7 @@ export default function SubmissionDetailPage({
           {/* Main content */}
           <div className="space-y-6 lg:col-span-2">
             {/* Contact */}
-            <Card className="p-5">
+            <div className="glass-card p-5">
               <h3 className="mb-4 font-semibold text-gray-900">О кандидате</h3>
               <dl className="grid grid-cols-2 gap-3 text-sm">
                 <div>
@@ -183,10 +183,10 @@ export default function SubmissionDetailPage({
                   </dd>
                 </div>
               </dl>
-            </Card>
+            </div>
 
             {/* SAT Prep */}
-            <Card className="p-5">
+            <div className="glass-card p-5">
               <h3 className="mb-4 font-semibold text-gray-900">
                 SAT и подготовка
               </h3>
@@ -215,10 +215,10 @@ export default function SubmissionDetailPage({
                   <dd className="font-medium">{sub.resources.join(", ")}</dd>
                 </div>
               </dl>
-            </Card>
+            </div>
 
             {/* Experience */}
-            <Card className="p-5">
+            <div className="glass-card p-5">
               <h3 className="mb-4 font-semibold text-gray-900">
                 Опыт подготовки
               </h3>
@@ -236,10 +236,10 @@ export default function SubmissionDetailPage({
                   </dd>
                 </div>
               </dl>
-            </Card>
+            </div>
 
             {/* Readiness */}
-            <Card className="p-5">
+            <div className="glass-card p-5">
               <h3 className="mb-4 font-semibold text-gray-900">Готовность</h3>
               <dl className="space-y-3 text-sm">
                 <div>
@@ -277,13 +277,13 @@ export default function SubmissionDetailPage({
                   </div>
                 )}
               </dl>
-            </Card>
+            </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Score breakdown */}
-            <Card className="p-5">
+            <div className="glass-card p-5">
               <h3 className="mb-4 font-semibold text-gray-900">
                 Расшифровка баллов
               </h3>
@@ -313,10 +313,10 @@ export default function SubmissionDetailPage({
                   </div>
                 </div>
               </div>
-            </Card>
+            </div>
 
             {/* Status & Notes */}
-            <Card className="p-5">
+            <div className="glass-card p-5">
               <h3 className="mb-4 font-semibold text-gray-900">Управление</h3>
               <div className="space-y-4">
                 <div>
@@ -347,10 +347,10 @@ export default function SubmissionDetailPage({
                     className="mt-1 min-h-[100px]"
                   />
                 </div>
-                <Button
+                <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full gap-2 bg-primary text-white"
+                  className="btn-cta w-full text-sm disabled:opacity-40"
                 >
                   {saving ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -358,9 +358,9 @@ export default function SubmissionDetailPage({
                     <Save className="h-4 w-4" />
                   )}
                   Сохранить
-                </Button>
+                </button>
               </div>
-            </Card>
+            </div>
           </div>
         </div>
       </div>

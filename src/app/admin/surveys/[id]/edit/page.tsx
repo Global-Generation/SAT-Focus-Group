@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
+// Card removed — using glass-card divs
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -245,7 +245,7 @@ export default function SurveyEditorPage({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.push("/focus-group/admin")}
+            onClick={() => router.push("/admin")}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -260,24 +260,24 @@ export default function SurveyEditorPage({
             <Settings className="h-4 w-4 mr-1" />
             Настройки
           </Button>
-          <Button
+          <button
             onClick={savePages}
             disabled={saving}
-            className="bg-primary text-white"
+            className="btn-cta h-9 px-5 text-sm disabled:opacity-40"
           >
             {saving ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-1" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Save className="h-4 w-4 mr-1" />
+              <Save className="h-4 w-4" />
             )}
             Сохранить
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* Settings panel */}
       {showSettings && (
-        <Card className="mb-4 p-4">
+        <div className="glass-form mb-4 p-5">
           <h3 className="mb-3 font-medium text-sm">Настройки опроса</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -368,16 +368,15 @@ export default function SurveyEditorPage({
             </div>
           </div>
           <div className="mt-3 flex justify-end">
-            <Button
+            <button
               onClick={saveSettings}
               disabled={saving}
-              className="bg-primary text-white"
-              size="sm"
+              className="btn-cta h-9 px-5 text-sm disabled:opacity-40"
             >
               Сохранить настройки
-            </Button>
+            </button>
           </div>
-        </Card>
+        </div>
       )}
 
       {/* Page tabs */}
@@ -431,7 +430,7 @@ export default function SurveyEditorPage({
       {/* Questions */}
       <div className="space-y-3">
         {currentPage?.questions.map((q, qi) => (
-          <Card key={qi} className="p-4">
+          <div key={qi} className="glass-card p-4">
             <div className="flex items-start gap-2">
               <div className="flex flex-col gap-1 pt-1">
                 <button
@@ -679,7 +678,7 @@ export default function SurveyEditorPage({
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
 
