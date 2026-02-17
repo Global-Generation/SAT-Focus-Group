@@ -9,6 +9,8 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ─── Legacy model (kept for backward compat) ───
+
 enum SubmissionStatus {
   PENDING
   SHORTLISTED
@@ -22,14 +24,12 @@ model Submission {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Contact
   name             String
   telegramUsername String   @unique
   age              Int
   city             String
   educationLevel   String
 
-  // SAT Prep
   satTimeline    String
   hasTakenSat    Boolean
   previousScore  Int?
@@ -37,33 +37,187 @@ model Submission {
   resources      String[]
   platformUsage  String?
 
-  // Experience
   featuresUsed   String[]  @default([])
   whatYouLike     String
   whatFrustrates  String
 
-  // Readiness
   motivation       String
   sessionReadiness String
   availableDays    String[]
   availableTimes   String[]
 
-  // Meta
   referralSource   String?
   consentData      Boolean
   consentRecording Boolean
   ipAddress        String?
 
-  // Scoring
   totalScore      Int
   scoreBreakdown  Json
   scorePercentage Int
 
-  // Admin
   status     SubmissionStatus @default(PENDING)
   adminNotes String?
 
   @@index([status])
   @@index([totalScore(sort: Desc)])
   @@map("submissions")
+}
+
+// ─── New multi-survey models ───
+
+enum AdminRole {
+  OWNER
+  EDITOR
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         AdminRole @default(EDITOR)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("admin_users")
+}
+
+enum SurveyStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+  ARCHIVED
+}
+
+model Survey {
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  title          String
+  description    String?
+  status         SurveyStatus @default(DRAFT)
+  heroTitle      String?
+  ndaText        String?
+  successMessage String?
+  maxScore       Int          @default(0)
+  scoreTiers     Json?
+  dedupFieldKey  String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  pages     SurveyPage[]
+  responses Response[]
+
+  @@map("surveys")
+}
+
+model SurveyPage {
+  id        String   @id @default(cuid())
+  surveyId  String
+  title     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  survey    Survey     @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  questions Question[]
+
+  @@index([surveyId])
+  @@map("survey_pages")
+}
+
+enum QuestionType {
+  TEXT
+  TEXTAREA
+  NUMBER
+  RADIO
+  CHECKBOX
+  BOOLEAN
+  CHIP_SELECT
+  CONSENT
+}
+
+model Question {
+  id              String       @id @default(cuid())
+  pageId          String
+  fieldKey        String
+  label           String
+  description     String?
+  type            QuestionType
+  required        Boolean      @default(true)
+  sortOrder       Int          @default(0)
+  config          Json?
+  scoringCategory String?
+  maxPoints       Int          @default(0)
+  scoringRules    Json?
+  showIf          Json?
+
+  page    SurveyPage       @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  options QuestionOption[]
+  answers Answer[]
+
+  @@index([pageId])
+  @@map("questions")
+}
+
+model QuestionOption {
+  id         String @id @default(cuid())
+  questionId String
+  value      String
+  label      String
+  sortOrder  Int    @default(0)
+  points     Int    @default(0)
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answers  Answer[]
+
+  @@index([questionId])
+  @@map("question_options")
+}
+
+enum ResponseStatus {
+  PENDING
+  SHORTLISTED
+  SELECTED
+  REJECTED
+  CONTACTED
+}
+
+model Response {
+  id              String         @id @default(cuid())
+  surveyId        String
+  totalScore      Int            @default(0)
+  scorePercentage Int            @default(0)
+  scoreBreakdown  Json?
+  status          ResponseStatus @default(PENDING)
+  adminNotes      String?
+  ipAddress       String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  survey  Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  answers Answer[]
+
+  @@index([surveyId])
+  @@index([status])
+  @@index([totalScore(sort: Desc)])
+  @@map("responses")
+}
+
+model Answer {
+  id               String  @id @default(cuid())
+  responseId       String
+  questionId       String
+  textValue        String?
+  numberValue      Float?
+  boolValue        Boolean?
+  arrayValue       String[]
+  selectedOptionId String?
+  points           Int     @default(0)
+
+  response       Response        @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  question       Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOption QuestionOption? @relation(fields: [selectedOptionId], references: [id])
+
+  @@index([responseId])
+  @@index([questionId])
+  @@map("answers")
 }
