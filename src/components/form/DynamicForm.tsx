@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -161,13 +161,14 @@ export default function DynamicForm({ survey }: Props) {
             {(survey.heroTitle || survey.title)
               .split(" ")
               .map((word, i) => (
-                <span
-                  key={i}
-                  className="animate-word-reveal inline-block"
-                  style={{ animationDelay: `${i * 100}ms` }}
-                >
-                  {word}{" "}
-                </span>
+                <Fragment key={i}>
+                  <span
+                    className="animate-word-reveal inline-block"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                  >
+                    {word}
+                  </span>{" "}
+                </Fragment>
               ))}
           </h1>
           {survey.description && (
